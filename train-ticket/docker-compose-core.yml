@@ -1,0 +1,258 @@
+services:
+  redis:
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - my-network
+
+  # Lightweight stub providing DNS aliases for optional non-core services
+  # to satisfy ts-ui-dashboard's Nginx upstream resolution without burning RAM
+  ts-stub:
+    image: nginx:alpine
+    restart: always
+    networks:
+      my-network:
+        aliases:
+          - ts-admin-basic-info-service
+          - ts-admin-order-service
+          - ts-admin-route-service
+          - ts-admin-travel-service
+          - ts-admin-user-service
+          - ts-assurance-service
+          - ts-avatar-service
+          - ts-cancel-service
+          - ts-consign-service
+          - ts-execute-service
+          - ts-food-service
+          - ts-inside-payment-service
+          - ts-news-service
+          - ts-notification-service
+          - ts-order-other-service
+          - ts-payment-service
+          - ts-preserve-other-service
+          - ts-preserve-service
+          - ts-rebook-service
+          - ts-route-plan-service
+          - ts-security-service
+          - ts-ticket-office-service
+          - ts-travel-plan-service
+          - ts-voucher-service
+
+  ts-ui-dashboard:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "8088:8080"
+    volumes:
+      - ./ts-ui-dashboard/nginx-alpine.conf:/etc/nginx/nginx.conf:ro
+      - ./ts-ui-dashboard/static:/usr/share/nginx/html:ro
+    networks:
+      - my-network
+    depends_on:
+      - ts-stub
+
+  ts-auth-service:
+    image: ${IMG_REPO:-codewisdom}/ts-auth-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "12340:12340"
+    networks:
+      - my-network
+    depends_on:
+      - ts-auth-mongo
+
+  ts-auth-mongo:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - my-network
+
+  ts-user-service:
+    image: ${IMG_REPO:-codewisdom}/ts-user-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "12342:12342"
+    networks:
+      - my-network
+    depends_on:
+      - ts-user-mongo
+
+  ts-user-mongo:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - my-network
+
+  ts-verification-code-service:
+    image: ${IMG_REPO:-codewisdom}/ts-verification-code-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "15678:15678"
+    networks:
+      - my-network
+
+  ts-station-service:
+    image: ${IMG_REPO:-codewisdom}/ts-station-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "12345:12345"
+    networks:
+      - my-network
+    depends_on:
+      - ts-station-mongo
+
+  ts-station-mongo:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - my-network
+
+  ts-train-service:
+    image: ${IMG_REPO:-codewisdom}/ts-train-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "14567:14567"
+    networks:
+      - my-network
+    depends_on:
+      - ts-train-mongo
+
+  ts-train-mongo:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - my-network
+
+  ts-route-service:
+    image: ${IMG_REPO:-codewisdom}/ts-route-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "11178:11178"
+    networks:
+      - my-network
+    depends_on:
+      - ts-route-mongo
+
+  ts-route-mongo:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - my-network
+
+  ts-travel-service:
+    image: ${IMG_REPO:-codewisdom}/ts-travel-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "12346:12346"
+    networks:
+      - my-network
+    depends_on:
+      - ts-travel-mongo
+
+  ts-travel-mongo:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - my-network
+
+  ts-travel2-service:
+    image: ${IMG_REPO:-codewisdom}/ts-travel2-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "16346:16346"
+    networks:
+      - my-network
+    depends_on:
+      - ts-travel2-mongo
+
+  ts-travel2-mongo:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - my-network
+
+  ts-basic-service:
+    image: ${IMG_REPO:-codewisdom}/ts-basic-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "15680:15680"
+    networks:
+      - my-network
+
+  ts-ticketinfo-service:
+    image: ${IMG_REPO:-codewisdom}/ts-ticketinfo-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "15681:15681"
+    networks:
+      - my-network
+
+  ts-price-service:
+    image: ${IMG_REPO:-codewisdom}/ts-price-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "16579:16579"
+    networks:
+      - my-network
+    depends_on:
+      - ts-price-mongo
+
+  ts-price-mongo:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - my-network
+
+  ts-contacts-service:
+    image: ${IMG_REPO:-codewisdom}/ts-contacts-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "12347:12347"
+    networks:
+      - my-network
+    depends_on:
+      - ts-contacts-mongo
+
+  ts-contacts-mongo:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - my-network
+
+  ts-order-service:
+    image: ${IMG_REPO:-codewisdom}/ts-order-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "12031:12031"
+    networks:
+      - my-network
+    depends_on:
+      - ts-order-mongo
+
+  ts-order-mongo:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - my-network
+
+  ts-config-service:
+    image: ${IMG_REPO:-codewisdom}/ts-config-service:${IMG_TAG:-0.2.0}
+    restart: always
+    ports:
+      - "15679:15679"
+    networks:
+      - my-network
+    depends_on:
+      - ts-config-mongo
+
+  ts-config-mongo:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

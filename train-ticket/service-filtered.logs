@@ -1,0 +1,19 @@
+================================================================
+  TRAIN-TICKET FILTERED SERVICE LOGS — 2026-10-14 13:51:12
+  (Bootstrap, MongoDB WiredTiger, and Spring framework noise removed)
+================================================================
+
+┌─────────────────────────────────────────────────────
+│ SERVICE: ts-auth-service ts-user-service ts-travel-service ts-travel2-service ts-basic-service ts-station-service ts-route-service ts-train-service ts-price-service ts-order-service ts-contacts-service ts-config-service ts-verification-code-service ts-ticketinfo-service ts-stub
+└─────────────────────────────────────────────────────
+30
+
+================================================================
+  PASSENGER CURL ACTIVITY LOG (simultaneous requests)
+================================================================
+
+[13:52:13] SIMULTANEOUS CURL RESULTS
+  admin GET /routeservice/routes      -> routes=11
+  admin GET /trainservice/trains      -> trains=15
+  admin GET /travelservice/trips      -> trips=6
+  admin GET /priceservice/prices      -> prices=11
